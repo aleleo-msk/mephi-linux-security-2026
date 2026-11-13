@@ -1,0 +1,63 @@
+    1  getent passwd user1
+    2  getent passwd 1234
+    3  getent group students >/dev/null || sudo groupadd students
+    4  sudo useradd -m -d /home/user1 -u 1234 -G students -s /bin/bash user1
+    5  sudo passwd user1
+    6  sudo chage -M 90 user1
+    7  id user1
+    8  sudo chage -l user1
+    9  sudo find / -type f -perm -4000 -print > ~/setuid-files.out
+   10  sudo find / \( -path /proc -o -path /run/user/1000/doc \) -prune -o     -type f -perm -4000 -print > ~/setuid-files.out
+   11  sudo find / \( -path /proc -o -path /run/user/1000/doc \) -prune -o     -type f -perm -4000 -print > ~/setuid-files.out
+   12  printf 'Код завершения find: %s\n' "$?"
+   13  wc -l ~/setuid-files.out
+   14  sudo find / /run -xdev -type f -perm -4000 -print     > ~/setuid-files.out 2> ~/setuid-find-errors.log
+   15  printf 'Код завершения find: %s\n' "$?"
+   16  wc -l ~/setuid-files.out
+   17  cat ~/setuid-find-errors.log
+   18  [200~uid_min=$(awk '$1 == "UID_MIN" { print $2 }' /etc/login.defs)
+   19  uid_max=$(awk '$1 == "UID_MAX" { print $2 }' /etc/login.defs)
+   20  printf 'Диапазон UID: %s–%s\n' "$uid_min" "$uid_max"
+   21  ps -e -o pid,ruid,euid,comm |     awk -v min="$uid_min" -v max="$uid_max"         'NR == 1 || ($2 >= min && $2 <= max && $3 == 0)' |     tee ~/privileged-processes.out~
+   22  sudo -iu user1
+   23  sudo install -d -o root -g students -m 0750 /home/user1/security-lab
+   24  sudo install -o root -g students -m 0750 "$(command -v ping)" /home/user1/security-lab/ping-suid
+   25  su user1
+   26  sudo chmod 4750 /home/user1/security-lab/ping-suid
+   27  sudo stat /home/user1/security-lab/ping-suid
+   28  su user1
+   29  sudo visudo -f /etc/sudoers.d/mephi-time
+   30  sudo visudo -c
+   31  sudo -l -U user1
+   32  sudo chmod 0440 /etc/sudoers.d/mephi-time
+   33  sudo visudo -c
+   34  su user1
+   35  sudo cat /etc/sudoers.d/mephi-time > ~/sudoers.out
+   36  stat /home/user1 > ~/stat.out
+   37  stat "$lab_dir/ping-suid" "$lab_dir/ping-cap" >> ~/stat.out
+   38  getcap "$lab_dir/ping-cap" > ~/getcap.out
+   39  history > ~/history.out
+   40  sudo stat /home/user1     /home/user1/security-lab/ping-suid     /home/user1/security-lab/ping-cap > ~/stat.out
+   41  sudo getcap /home/user1/security-lab/ping-cap > ~/getcap.out
+   42  cat ~/stat.out ~/getcap.out
+   43  history > ~/history.out
+   44  ls
+   45  suvi getcap.out
+   46  sudo ls -l /home/user1/security-lab
+   47  ls
+   48  vi getcap.out
+   49  sudo stat /home/user1     /home/user1/security-lab/ping-suid     /home/user1/security-lab/ping-cap > ~/stat.out
+   50  sudo getcap /home/user1/security-lab/ping-cap > ~/getcap.out
+   51  cat ~/stat.out ~/getcap.out
+   52  history > ~/history.out
+   53  sudo install -o root -g students -m 0750 "$(command -v ping)" /home/user1/security-lab/ping-cap
+   54  sudo setcap cap_net_raw=ep /home/user1/security-lab/ping-cap
+   55  sudo -u user1 -- /home/user1/security-lab/ping-cap -4 -e 0 -c 1 127.0.0.1
+   56  sudo stat /home/user1 /home/user1/security-lab/ping-suid /home/user1/security-lab/ping-cap > ~/stat.out
+   57  sudo getcap /home/user1/security-lab/ping-cap > ~/getcap.out
+   58  history > ~/history.out
+   59  cat ~/stat.out ~/getcap.out
+   60  sudo stat /home/user1     /home/user1/security-lab/ping-suid     /home/user1/security-lab/ping-cap > ~/stat.out
+   61  sudo getcap /home/user1/security-lab/ping-cap > ~/getcap.out
+   62  cat ~/stat.out ~/getcap.out
+   63  history > ~/history.out
